@@ -1,0 +1,85 @@
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>택배 내역 확인 시스템</title>
+</head>
+    <body>
+        <table class="table">
+                <thead>
+			<button type="button" class="btn btn-primary mb-2" id="re_getButton">DB 새로고침</button>
+               		<button type="button" class="btn btn-primary mb-2" id="Rec_getButton">토큰 받기</button> 
+                <tr>
+                    <th scope="col">내 택배의 고유번호</th>
+                    <th scope="col"> </th>
+                    <th scope="col"> </th>
+                    <th scope="col"> </th>
+                    <th scope="col"> </th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+        </table>
+
+<script>
+ $(document).ready(function() {
+		load_data();
+
+                // bind event
+
+                $('#re_getButton').click(function(){
+                    load_data();
+                });
+		$('#Rec_getButton').click(function(){
+			receive();
+		});
+
+            });
+
+
+	function load_data() {
+              $.get('/api/load_data', function(data) {
+                console.log(data.length);                   
+		
+		$('.table > tbody').html('');
+
+                for(var i = 0; i < data.length; i++) {
+                    var nonce = data[i].nonce;
+                    var pub = data[i].pub;
+                    var status = data[i].status;
+
+
+                var html =""
+                html += '<tr>';
+                html += '<th scope = "row">'+i+'</t>';
+		html += '<td>'+ pub+' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  '+ nonce +' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '+status+'</td>';
+                html += '</tr>';
+                $('.table > tbody').append(html);
+                }
+              
+                console.log(data);
+             });
+           }
+
+	function receive(){
+		 $.get('/api/receive', function(data) {
+                          var data = JSON.parse(data);
+                                                   
+                          var count = data[0]["count(status)"]
+			console.log(count);
+		});
+	}
+
+</script>
+   </body>
+</html>
+
+
